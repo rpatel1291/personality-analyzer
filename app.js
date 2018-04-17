@@ -27,7 +27,6 @@ var User = require('./data/user')
 
 app.use("/public", static);
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded());
 app.use(cookieParser());
 app.engine("handlebars", exphbs({ defaultLayout: "layout" }));
 app.set('views', path.join(__dirname, 'views'));
@@ -83,9 +82,8 @@ userProfileURL  : 'https://api.twitter.com/1.1/account/verify_credentials.json?i
 includeEmail:true
 },
 function(accessToken, refreshToken, profile, done) {
-console.log(profile)
 User.findOne({
-    'username': profile.displayName 
+    'username': profile.username 
 }, function(err, user) {
     if (err) {
         return done(err);
@@ -115,7 +113,6 @@ app.get('/auth/twitter', passport.authenticate('twitter'));
 app.get('/twitter/callback',
 passport.authenticate('twitter', { failureRedirect: '/user/login' }),
   function(req,res){
-    console.log(req.user.username);
     res.redirect("/");
   });
 
